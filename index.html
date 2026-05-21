@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sardor Shop - Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #var(--tg-theme-bg-color, #f4f6f9);
+            color: #var(--tg-theme-text-color, #222);
+            margin: 0;
+            padding: 15px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .product-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .product-price {
+            color: #0088cc;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .btn {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #006699;
+        }
+        /* Modal (To'lov oynasi) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .close-btn {
+            background: #ff3b30;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sardor Shop</h2>
+    <p style="text-align: center; color: gray;">Kerakli tovarni tanlang:</p>
+
+    <div class="product-card">
+        <div class="product-title">Telegram Premium (3 oylik)</div>
+        <div class="product-price">60 000 so'm</div>
+        <button class="btn" onclick="openPayment('Telegram Premium 3 oylik', '60 000 so\'m')">Sotib olish</button>
+    </div>
+
+    <div class="product-card">
+        <div class="product-title">Telegram Stars (100 dona)</div>
+        <div class="product-price">30 000 so'm</div>
+        <button class="btn" onclick="openPayment('Telegram Stars 100 dona', '30 000 so\'m')">Sotib olish</button>
+    </div>
+</div>
+
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">To'lov qilish</h3>
+        <p>Siz tanlagan tovar narxi: <span id="modalPrice" style="font-weight: bold; color: #0088cc;"></span></p>
+        <hr>
+        <p>To'lovni amalga oshirish uchun pastdagi kartaga pul o'tkazing:</p>
+        <p style="font-size: 18px; font-weight: bold; background: #eee; padding: 10px; border-radius: 8px;">
+            8600 0000 0000 0000
+        </p>
+        <p style="font-size: 12px; color: red;">(Karta raqamini o'zingiznikiga almashtiring)</p>
+        <p>Pulni o'tkazgach, tasdiqlash uchun botga yozing.</p>
+        <button class="btn" onclick="sendOrder()">To'lovni qildim</button>
+        <button class="btn close-btn" onclick="closePayment()">Yopish</button>
+    </div>
+</div>
+
+<script>
+    let tg = window.Telegram.WebApp;
+    tg.expand(); // Mini Appni to'liq ekranda ochish
+
+    let currentProduct = "";
+    let currentPrice = "";
+
+    function openPayment(product, price) {
+        currentProduct = product;
+        currentPrice = price;
+        document.getElementById('modalTitle').innerText = product;
+        document.getElementById('modalPrice').innerText = price;
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePayment() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function sendOrder() {
+        // Botga ma'lumot yuborish
+        let data = {
+            product: currentProduct,
+            price: currentPrice,
+            status: "To'lov qilindi"
+        };
+        tg.sendData(JSON.stringify(data)); // Ma'lumotni botga qaytaradi
+        tg.close(); // Ilovani yopadi
+    }
+</script>
+
+</body>
+</html>
+
